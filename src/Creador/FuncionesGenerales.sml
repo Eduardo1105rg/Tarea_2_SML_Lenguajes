@@ -47,7 +47,6 @@ struct
         end;
     (* Fin de la funcion para ingresar numeros. *)
 
-
     (* Funcion para el regitros de nuevos libros en el sistema de la biblioteca. *)
     fun ingresar_nuevo_registro () = 
         let
@@ -128,13 +127,6 @@ struct
             (print ("El contenido del archivo ha sido borrado y reestablecido con la linea inicial.\n"))
         end; 
     (* <<Fin de la funcion de borrar datos *)
-
-
-
-
-
-
-
 
 
 end;

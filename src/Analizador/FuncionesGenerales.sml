@@ -47,90 +47,40 @@ struct
         end;
     (* Fin de la funcion para ingresar numeros. *)
 
-
-    (* Funcion para el regitros de nuevos libros en el sistema de la biblioteca. *)
-    fun ingresar_nuevo_registro () = 
+    (* funcion para permitir que el usuario cargue los datos  *)
+    fun cargar_datos_archivo () = 
         let
-
-            (* Se solicita el codigo del libro *)
-            val () = print ("\nIngrese el codigo del libro. (E.j: LIB9999): ")
-            val codigoLibro = entradaDeTeclado ();
-            val () = print ("\n")
-
-            (* Se solicita la fecha de publicacion del libro*)
-            val () = print ("\nIngrese la fecha de publicacion del libro. (E.j: 2018-11-10): ")
-            val fechaPublicacion = entradaDeTeclado ();
-            val () = print ("\n")
-
-            (* Se solicita  el nombre del autor*)
-            val () = print ("\nIngrese el nombre del autor. (E.j: George Orwell): ")
-            val nombreAutor = entradaDeTeclado ();
-            val () = print ("\n")
-
-            (* Se solicita el genero del libro *)
-            val () = print ("\nIngrese el genero del libro (E.j: Fantasia): ")
-            val generoLibro = entradaDeTeclado ();
-            val () = print ("\n")
-
-            (* Se solicita  *)
-            val () = print ("\nIngrese la cantidad de copias disponibles del libro (E.j: 123): ")
-            val numeroCopias = ingresarNumeros ();
-            val () = print ("\n")
-
-            (* Variable con los datos que vamos a registrar. *)
-            val lineaRegistro = codigoLibro ^ "," ^ fechaPublicacion ^ "," ^ nombreAutor ^ "," ^ generoLibro ^ "," ^ Int.toString numeroCopias
-
-            fun guardar_registro (count) =
+            (* Función auxiliar para cargar el registro *)
+            fun cargar_registro (intentos) =
                 let 
-
-                    (* Se solicita la ruta del archivo a usar. *)
+                    (* Solicitar la ruta del archivo *)
                     val () = print ("\nIngrese la ruta del archivo a usar (E.j: src/Data/libros.csv): ")
-                    val rutaArchivo = entradaDeTeclado ();
+                    val rutaArchivo = entradaDeTeclado ()
                     val () = print ("\n")
-
-                    (* val _ = ( ManejoArchivos.escribirLinea (rutaArchivo, lineaRegistro )) handle ManejoArchivos.ArchivoNoEncontrado => (
-
-                        print ("Error: No se pudo abrir el archivo...\n");
-                        raise ManejoArchivos.ErrorArchivo
-                    ) *)
                 in
-                    (ManejoArchivos.escribirLinea (rutaArchivo, lineaRegistro)) handle ManejoArchivos.ArchivoNoEncontrado => (
-                        if count > 0 then (
+                    (* Intentar leer el archivo *)
+                    ManejoArchivos.leerArchivo rutaArchivo
+                    handle ManejoArchivos.ArchivoNoEncontrado => (
+                        if intentos > 0 then (
                             print ("Error: No se pudo abrir el archivo. Intentando nuevamente...\n");
-                            guardar_registro (count - 1)
+                            cargar_registro (intentos - 1)  (* Volver a intentar *)
                         ) else (
-                            print ("Error: No se pudo registrar el libro despues de varios intentos.\n");
-                            raise ManejoArchivos.ErrorArchivo
+                            print ("Error: No se pudo abrir el archivo despues de varios intentos.\n");
+                            raise ManejoArchivos.ErrorArchivo  (* Lanzar excepción si agota intentos *)
                         )
                     )
                 end
         in
-            guardar_registro 3;
-            print ("Se ha registrado el nuevo contenido exitosamente.\n")
+            (* Intentar cargar el archivo con hasta 3 intentos *)
+            let
+                val datos = cargar_registro 3 (* Cargar los datos del archivo *)
+                val datos_procesados = List.map ManejoArchivos.dividirPorComas datos
+            in
+                datos_procesados  (* Retornar los datos procesados como una lista de listas *)
+            end
         end;
 
-    (* <<Fin de la funcion de agregar registros. *)
-
-    (* >>Funcion para el borrado de los datos del archivo, para esto se solicita la ruta del archivo. *)
-    fun borrar_registros () = 
-
-        let 
-            val () = print ("\nIngrese la ruta del archivo a usar (E.j: src/Data/libros.csv): ")
-            val rutaArchivo = entradaDeTeclado ();
-            val () = print ("\n")
-
-            val _ = ( ManejoArchivos.resetearContenido rutaArchivo) handle ManejoArchivos.ArchivoNoEncontrado => (
-
-                print ("Error: No se pudo abrir el archivo...\n");
-                raise ManejoArchivos.ErrorArchivo
-            )
-        in 
-            (print ("El contenido del archivo ha sido borrado y reestablecido con la linea inicial.\n"))
-        end; 
-    (* <<Fin de la funcion de borrar datos *)
-
-
-
+    (* Fin de la funcion para cargar los datos  *)
 
 
 

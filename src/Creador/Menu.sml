@@ -22,8 +22,9 @@ struct
         in
             ()
         end;
-
-    (* Fun cion principal del sistema. *)
+    (* Fin de la funcion de mostrar la opciones del menuPrincipal. *)
+    
+    (* Funcion principal del sistema. *)
     fun MenuPrincipal () = (
 
         mostrarMenu();
@@ -39,7 +40,5 @@ struct
 
             | _ => (print ("\nLa opcion ingresada es invalida, intentalo nuevamente\n"); MenuPrincipal ())
     );
-
-
 
 end;

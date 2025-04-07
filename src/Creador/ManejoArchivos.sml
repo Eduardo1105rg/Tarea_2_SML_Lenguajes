@@ -32,22 +32,27 @@ struct
                     end
 
         end;
-
-
-    fun dividirPorComas linea =
-        String.tokens (fn c => c = #",") linea;
-
-    fun procesarArchivoCSV ruta =
-        let
-            val lineas = (leerArchivo ruta) handle ArchivoNoEncontrado => (print ("Error: No se pudo abrir el archivo. Verifique la ruta.\n"); []);
-        in
-            List.map dividirPorComas lineas
-        end;
-
+    (* Fin de la funcion para leer el contenido de un archivo. *)
+    (* 
+    fun leerLineas archivo =
+        case TextIO.inputLine archivo of
+                NONE => []  (* No hay más líneas *)
+            | SOME linea => 
+                    let
+                        val longitud = String.size linea
+                        val linea_limpia = 
+                            if longitud > 0 andalso String.substring (linea, longitud - 1, 1) = "\n" then
+                                String.substring (linea, 0, longitud - 1)  (* Eliminar el salto de línea *)
+                            else
+                                linea
+                    in
+                        linea_limpia :: leerLineas archivo
+                    end;    
+    
+     *)
 
 
     (* Funcion para la escritura de los datos en un archivo *)
-
     fun escribirLinea (ruta, contenido) =
         let
             (* Abrir el archivo en modo 'append' para agregar nuevas líneas al final *)
@@ -63,7 +68,9 @@ struct
                         ()
                     end
         end;
+    (* Fin de la funcion para escribir contenido al final de un archivo. *)
 
+    (* Funcion para borrar todo el contenido de un archivo, ademas escribe la primera linea con los datos generales de la estructura. *)
     fun resetearContenido (ruta) =
         let
             (* Abrir el archivo en modo 'openOut' para agregar nuevas líneas al final *)
@@ -79,7 +86,6 @@ struct
                         ()
                     end
         end;
+    (* Fin de la funcion para el borrado del contenido de un archivo. *)
     
-
-
 end;

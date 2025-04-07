@@ -32,54 +32,49 @@ struct
                     end
 
         end;
+    (* Fin de la funcion para leer el contenido de un archivo. *)
+    (* 
+    fun leerLineas archivo =
+        case TextIO.inputLine archivo of
+                NONE => []  (* No hay más líneas *)
+            | SOME linea => 
+                    let
+                        val longitud = String.size linea
+                        val linea_limpia = 
+                            if longitud > 0 andalso String.substring (linea, longitud - 1, 1) = "\n" then
+                                String.substring (linea, 0, longitud - 1)  (* Eliminar el salto de línea *)
+                            else
+                                linea
+                    in
+                        linea_limpia :: leerLineas archivo
+                    end;    
+    
+     *)
 
 
+
+    (* Funcion para la division de una lista de texto, en donde cada elementos se va a separar por un ','. *)
     fun dividirPorComas linea =
-        String.tokens (fn c => c = #",") linea;
+        (* String.tokens (fn c => c = #",") linea; *)
+        let
+            val longitud = String.size linea
+            val linea_limpia = 
+                if longitud > 0 andalso String.substring (linea, longitud - 1, 1) = "\n" then
+                    String.substring (linea, 0, longitud - 1)  (* Eliminar el salto de línea *)
+                else
+                    linea
+        in
+            String.tokens (fn c => c = #",") linea_limpia
+        end;
+    (* Fin de la funcion separacion de datos. *)
 
+    (* Funcion para el procesado del contenido del archivo. *)
     fun procesarArchivoCSV ruta =
         let
-            val lineas = (leerArchivo ruta) handle ArchivoNoEncontrado => (print ("Error: No se pudo abrir el archivo. Verifique la ruta.\n"); []);
+            val datos = (leerArchivo ruta) handle ArchivoNoEncontrado => (print ("Error: No se pudo abrir el archivo. Verifique la ruta.\n"); []);
         in
-            List.map dividirPorComas lineas
+            List.map dividirPorComas datos
         end;
-
-
-
-    (* Funcion para la escritura de los datos en un archivo *)
-
-    fun escribirLinea (ruta, contenido) =
-        let
-            (* Abrir el archivo en modo 'append' para agregar nuevas líneas al final *)
-            val archivo = (SOME(TextIO.openAppend ruta)) handle _ => NONE (* Lanzar el eror al no poder arbir el archivo.*)
-        in
-            case archivo of 
-                NONE => raise ArchivoNoEncontrado
-                | SOME arch => 
-                    let
-                        val () = TextIO.output (arch, contenido ^ "\n");
-                        val () = TextIO.closeOut arch; 
-                    in
-                        ()
-                    end
-        end;
-
-    fun resetearContenido (ruta) =
-        let
-            (* Abrir el archivo en modo 'openOut' para agregar nuevas líneas al final *)
-            val archivo = (SOME(TextIO.openOut ruta)) handle _ => NONE (* Lanzar el eror al no poder arbir el archivo.*)
-        in
-            case archivo of 
-                NONE => raise ArchivoNoEncontrado
-                | SOME arch => 
-                    let
-                        val () = TextIO.output (arch, "codigo,fecha_publicacion,autor,genero,copias_disponibles" ^ "\n");
-                        val () = TextIO.closeOut arch; 
-                    in
-                        ()
-                    end
-        end;
-    
-
+    (* Fin de la funcion para el procesado de los archivos. *)
 
 end;
