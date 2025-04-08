@@ -39,13 +39,13 @@ struct
             mostrarMenu();
 
             case FuncionesGenerales.entradaDeTeclado () of 
-                (* "A" => (FuncionesGenerales.ingresar_nuevo_registro () handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
-                | "a" => (FuncionesGenerales.ingresar_nuevo_registro () handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
+                "A" => (FuncionesGenerales.mostrar_libros_en_rango (registros) handle FuncionesGenerales.ValorNoValido => print("Regresando al menu principal\n"); MenuPrincipal ())
+                | "a" => (FuncionesGenerales.mostrar_libros_en_rango (registros) handle FuncionesGenerales.ValorNoValido => print("Regresando al menu principal\n"); MenuPrincipal ())
 
-                |"B" => (FuncionesGenerales.borrar_registros () handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
-                | "b" => (FuncionesGenerales.borrar_registros () handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ()) *)
+                |"B" => (FuncionesGenerales.mostrar_autores_5_libros (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
+                | "b" => (FuncionesGenerales.mostrar_autores_5_libros (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
 
-                 "S" => print ("\nSaliendo del programa...\n")
+                | "S" => print ("\nSaliendo del programa...\n")
                 | "s" => print ("\nSaliendo del programa...\n")
 
                 | _ => (print ("\nLa opcion ingresada es invalida, intentalo nuevamente\n"); MenuPrincipal ())
