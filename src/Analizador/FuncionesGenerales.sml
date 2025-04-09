@@ -278,15 +278,152 @@ struct
     (* Fin *)
 
     (* funcion *)
-    fun buscar_libros_por_codigo (datos) = ()
+    fun buscar_libros_por_codigo (datos) =
+        let
+            val () = print ("\nIngrese el codigo del libro. (E.j: LIB9999): ")
+            val codigoLibro = entradaDeTeclado ();
+            val () = print ("\n")
+
+            (* Filtrar libros por código *)
+            val librosFiltrados = List.filter (fn libro =>
+                let
+                    val codigo = List.nth (libro, 0)
+                in
+                    codigo = codigoLibro
+                end
+            ) datos
+
+        in
+            if List.length librosFiltrados = 0 then
+                print ("No hay libros con el codigo indicado.\n")
+            else (
+                print ("===== Datos de los libros con el codigo indicado:\n");
+                List.app (fn libro =>
+                    let
+                        val codigo = List.nth (libro, 0)
+                        val fecha = List.nth (libro, 1)
+                        val autor = List.nth (libro, 2)
+                        val genero = List.nth (libro, 3)
+                        val copias = List.nth (libro, 4)
+                    in
+                        print ("\n-- Datos del libro:\n");
+                        print (">> Codigo: " ^ codigo ^ "\n");
+                        print (">> Fecha: " ^ fecha ^ "\n");
+                        print (">> Autor: " ^ autor ^ "\n");
+                        print (">> Genero: " ^ genero ^ "\n");
+                        print (">> Copias: " ^ copias ^ "\n")
+                    end
+                ) librosFiltrados
+            )
+        end;
     (* Fin *)
 
     (* funcion *)
-    fun buscar_libros_por_autor (datos) = ()
+    fun buscar_libros_por_autor (datos) = 
+        let
+            (* Se solicita  el nombre del autor*)
+            val () = print ("\nIngrese el nombre del autor. (E.j: George Orwell): ")
+            val nombreAutor = entradaDeTeclado ();
+            val () = print ("\n")
+
+            (* Filtrar libros por autor *)
+            val librosFiltrados = List.filter (fn libro =>
+                let
+                    val autor = List.nth (libro, 2)
+                in
+                    autor = nombreAutor
+                end
+            ) datos
+
+        in
+          
+        if List.length librosFiltrados = 0 then
+                print ("No hay libros con el autor indicado.\n")
+            else (
+                print ("===== Datos de los libros con el autor indicado:\n");
+                List.app (fn libro =>
+                    let
+                        val codigo = List.nth (libro, 0)
+                        val fecha = List.nth (libro, 1)
+                        val autor = List.nth (libro, 2)
+                        val genero = List.nth (libro, 3)
+                        val copias = List.nth (libro, 4)
+                    in
+                        print ("\n-- Datos del libro:\n");
+                        print (">> Codigo: " ^ codigo ^ "\n");
+                        print (">> Fecha: " ^ fecha ^ "\n");
+                        print (">> Autor: " ^ autor ^ "\n");
+                        print (">> Genero: " ^ genero ^ "\n");
+                        print (">> Copias: " ^ copias ^ "\n")
+                    end
+                ) librosFiltrados
+            )
+        end;
+    (* Fin *)
+
+
+    (* funcion *)
+    fun contar_libros_por_categoria (datos) = 
+        let
+            fun contar_libros_categoria ([], []) [] = ([], [])
+            | contar_libros_categoria (categorias, []) [] = (categorias, [])
+            | contar_libros_categoria ([], cantLibros) [] = ([], cantLibros)
+            | contar_libros_categoria (categorias, cantLibros) [] = (categorias, cantLibros)  (* Caso faltante *)
+            | contar_libros_categoria (categorias, cantLibros) (libro::libros) = 
+                    let
+                        val autor = List.nth (libro, 3)  (* Columna del autor *)
+                        val validarExistencia = List.find (fn autorActual => autorActual = autor) categorias
+                    in
+                        case validarExistencia of 
+                            NONE => 
+                                contar_libros_categoria (autor::categorias, 1::cantLibros) libros
+                        | SOME _ => 
+                                let
+                                    val indice = Option.valOf (buscar_indice autor categorias)
+                                    val nuevo_elemento = actualizar_lista cantLibros indice (List.nth (cantLibros, indice) + 1)
+                                in
+                                    contar_libros_categoria (categorias, nuevo_elemento) libros
+                                end
+                    end
+        in
+            contar_libros_categoria ([], []) datos
+        end;
+    (* Fin *)
+
+    (* Funcion *)
+    fun filtrar_libros_por_genero (generos, cantLibros, generoBuscado) =
+        let
+            fun filtrado ([], []) contador = contador
+            | filtrado ([], cantLibros) contador = contador
+            | filtrado (generos, []) contador = contador
+            | filtrado (genero::generos2, cantidad::cantidades) contador =
+                    if genero = generoBuscado then
+                        filtrado (generos2, cantidades) (contador + cantidad)
+                    else
+                        filtrado (generos2, cantidades) contador
+        in
+            filtrado (generos, cantLibros) 0
+        end;
+
     (* Fin *)
 
     (* funcion *)
-    fun mostrar_cant_libros_por_genero (datos) = ()
+    fun mostrar_cant_libros_por_genero_especifico (datos) = 
+        let
+            (* Se solicita el genero del libro *)
+            val () = print ("\nIngrese el genero del libro (E.j: Fantasia): ")
+            val generoLibro = entradaDeTeclado ();
+            val () = print ("\n")
+
+            val (generos, cantLibros) = contar_libros_por_categoria (datos);
+            val cantidad = filtrar_libros_por_genero (generos, cantLibros, generoLibro);
+
+        in
+            if cantidad = 0 then
+                print ("No hay libros con el genero ingresado.\n")
+            else
+                print ("===== Cantidad de libros en el genero ingresado: " ^ Int.toString cantidad ^ "\n")
+        end;
     (* Fin *)
 
     (* funcion *)
