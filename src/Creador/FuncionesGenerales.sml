@@ -83,7 +83,7 @@ struct
                 let 
 
                     (* Se solicita la ruta del archivo a usar. *)
-                    val () = print ("\nIngrese la ruta del archivo a usar (E.j: src/Data/libros.csv): ")
+                    val () = print ("\nIngrese la ruta del archivo a usar (E.j: src/Data/libros.csv o ../Data/libros.csv): ")
                     val rutaArchivo = entradaDeTeclado ();
                     val () = print ("\n")
 
@@ -114,7 +114,7 @@ struct
     fun borrar_registros () = 
 
         let 
-            val () = print ("\nIngrese la ruta del archivo a usar (E.j: src/Data/libros.csv): ")
+            val () = print ("\nIngrese la ruta del archivo a usar (E.j: src/Data/libros.csv o ../Data/libros.csv): ")
             val rutaArchivo = entradaDeTeclado ();
             val () = print ("\n")
 

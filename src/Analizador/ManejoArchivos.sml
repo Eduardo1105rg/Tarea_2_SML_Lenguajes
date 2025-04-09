@@ -24,34 +24,18 @@ struct
                 NONE => raise ArchivoNoEncontrado (* Esto es para lanzar la excepcion. *)
                 | SOME arch => 
                     let 
-                        val contenido = leerLineas (arch) (* Leer todo el contenido y separarlo en lineas. *) 
-                    
+                        val contenido = leerLineas (arch); (* Leer todo el contenido y separarlo en lineas. *) 
+                        val contenidoSinEncabezado =
+                            case contenido of
+                                [] => [] (* Si no hay contenido, retornar lista vacía *)
+                            | _ => tl contenido
                     in 
                         TextIO.closeIn arch; (* Estos cierra el archivo que se abio *)
-                        contenido (* Se retorna la informacion del archivo separada en una lista con cada linea del archivo. *)
+                        contenidoSinEncabezado (* Se retorna la informacion del archivo separada en una lista con cada linea del archivo. *)
                     end
 
         end;
     (* Fin de la funcion para leer el contenido de un archivo. *)
-    (* 
-    fun leerLineas archivo =
-        case TextIO.inputLine archivo of
-                NONE => []  (* No hay más líneas *)
-            | SOME linea => 
-                    let
-                        val longitud = String.size linea
-                        val linea_limpia = 
-                            if longitud > 0 andalso String.substring (linea, longitud - 1, 1) = "\n" then
-                                String.substring (linea, 0, longitud - 1)  (* Eliminar el salto de línea *)
-                            else
-                                linea
-                    in
-                        linea_limpia :: leerLineas archivo
-                    end;    
-    
-     *)
-
-
 
     (* Funcion para la division de una lista de texto, en donde cada elementos se va a separar por un ','. *)
     fun dividirPorComas linea =

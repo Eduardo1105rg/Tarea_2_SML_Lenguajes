@@ -522,14 +522,6 @@ struct
     (* Fin *)
 
     (* funcion *)
-    (* fun buscar_autor_con_mas_libros (autores, cantLibros) = 
-        if List.length autores = 0 then
-            NONE
-        else 
-            SOME (encontrar_maximos_en_lista (autores, cantLibros, "", 0)); *)
-    (* Fin *)
-
-    (* funcion *)
     fun mostrar_autor_con_mas_libros (resultado) =
         case resultado of
             NONE => print ("No hay autores registrados.\n")

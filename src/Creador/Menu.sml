@@ -7,7 +7,7 @@
 structure Menu =
 struct
   
-    (* >> Este seria la parte del menu de la palicacion. *)
+    (* >> Este seria la parte del menu de la aplicacion. *)
     fun mostrarMenu () = 
         let
             (* Se tuvi que meter en un let ya que solo se estaba imprimiendo la primera linea. *)
@@ -15,7 +15,7 @@ struct
             val () = print ("Sistema para el ingreso de nuevos datos en los registros del sistema...\n")
             val () = print ("Opciones disponibles...\n")
             val () = print (">> A) Agregar un nuevo libro.\n")
-            val () = print (">> A) Borrar datos.\n")
+            val () = print (">> B) Borrar datos.\n")
             val () = print (">> S) Salir del programa.\n")
             val () = print ("-- Ingresa una de las opciones anteriores: ")
 
@@ -24,7 +24,7 @@ struct
         end;
     (* Fin de la funcion de mostrar la opciones del menuPrincipal. *)
     
-    (* Funcion principal del sistema. *)
+    (* Funcion del menu principal del sistema. *)
     fun MenuPrincipal () = (
 
         mostrarMenu();

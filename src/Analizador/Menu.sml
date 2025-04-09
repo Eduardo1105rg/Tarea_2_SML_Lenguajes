@@ -8,7 +8,7 @@ structure Menu =
 struct
   
 
-    (* funcion *)
+    (* funcion para mostrar la opciones del menu de busqueda. *)
     fun mostrar_menu_busqueda () =
         let
             (* Se tuvi que meter en un let ya que solo se estaba imprimiendo la primera linea. *)
@@ -25,7 +25,7 @@ struct
         end;
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para reaccionar a la opcion seleccionada por el usuario, depliega la funcion que corresponde a la opcion seleccioanda.*)
     fun menu_busqueda (registros) = (        
         mostrar_menu_busqueda ();
         case FuncionesGenerales.entradaDeTeclado () of 
@@ -40,8 +40,6 @@ struct
         );
     (* Fin *)
        
-
-
     (* >> Este seria la parte del menu de la palicacion. *)
     fun mostrarMenu () = 
         let
@@ -65,172 +63,70 @@ struct
         end;
     (* Fin *)
     
-    (* Funcion principal del sistema. *)
-(* fun MenuPrincipal () =
-    let
-        (* Cargar los datos una sola vez al inicio *)
-        val registros = (FuncionesGenerales.cargar_datos_archivo ()) handle ManejoArchivos.ErrorArchivo => (
-            print ("No se pudo cargar el archivo. Cerrando el programa...\n");
-            raise ManejoArchivos.ErrorArchivo
-        );
-
-        (* Función auxiliar para manejar el ciclo del menú *)
-        fun cicloMenu registros =
-            let
-                mostrarMenu ();  (* Mostrar las opciones del menú *)
-            in
-                (* Manejar la entrada del usuario *)
-                case FuncionesGenerales.entradaDeTeclado () of
-                    "A" => (
-                        FuncionesGenerales.mostrar_libros_en_rango registros handle FuncionesGenerales.ValorNoValido =>
-                            print ("Regresando al menu principal\n");
-                        cicloMenu registros
-                    )
-                  | "a" => (
-                        FuncionesGenerales.mostrar_libros_en_rango registros handle FuncionesGenerales.ValorNoValido =>
-                            print ("Regresando al menu principal\n");
-                        cicloMenu registros
-                    )
-                  | "B" => (
-                        FuncionesGenerales.mostrar_autores_5_libros registros handle ErrorArchivo =>
-                            print ("Regresando al menu principal\n");
-                        cicloMenu registros
-                    )
-                  | "b" => (
-                        FuncionesGenerales.mostrar_autores_5_libros registros handle ErrorArchivo =>
-                            print ("Regresando al menu principal\n");
-                        cicloMenu registros
-                    )
-                  | "C" => (
-                        menu_busqueda registros;
-                        cicloMenu registros
-                    )
-                  | "c" => (
-                        menu_busqueda registros;
-                        cicloMenu registros
-                    )
-                  | "D" => (
-                        FuncionesGenerales.mostrar_cant_libros_por_genero_especifico registros handle ErrorArchivo =>
-                            print ("Regresando al menu principal\n");
-                        cicloMenu registros
-                    )
-                  | "d" => (
-                        FuncionesGenerales.mostrar_cant_libros_por_genero_especifico registros handle ErrorArchivo =>
-                            print ("Regresando al menu principal\n");
-                        cicloMenu registros
-                    )
-                  | "E" => (
-                        FuncionesGenerales.mostrar_resumen_general registros handle ErrorArchivo =>
-                            print ("Regresando al menu principal\n");
-                        cicloMenu registros
-                    )
-                  | "e" => (
-                        FuncionesGenerales.mostrar_resumen_general registros handle ErrorArchivo =>
-                            print ("Regresando al menu principal\n");
-                        cicloMenu registros
-                    )
-                  | "S" => print ("\nSaliendo del programa...\n")
-                  | "s" => print ("\nSaliendo del programa...\n")
-                  | _ => (
-                        print ("\nLa opciun ingresada es invalida, intentelo nuevamente\n");
-                        cicloMenu registros
-                    )
-            end  (* Fin del bloque let-in de cicloMenu *)
-    in
-        cicloMenu registros  (* Iniciar el ciclo del menú con los datos cargados *)
-    end;  Fin del bloque let-in principal *)
-
-
-    (* fun MenuPrincipal (registros) = 
+    (* Funcion del menu principal del sistema. *)
+    fun MenuPrincipal registros = 
         let 
-            mostrarMenu ();
+            val _ = mostrarMenu ();  
         in
             case FuncionesGenerales.entradaDeTeclado () of 
-                "A" => (FuncionesGenerales.mostrar_libros_en_rango (registros) handle FuncionesGenerales.ValorNoValido => print("Regresando al menu principal\n"); MenuPrincipal (registros))
-                | "a" => (FuncionesGenerales.mostrar_libros_en_rango (registros) handle FuncionesGenerales.ValorNoValido => print("Regresando al menu principal\n"); MenuPrincipal (registros))
+                "A" => (
+                    FuncionesGenerales.mostrar_libros_en_rango registros handle FuncionesGenerales.ValorNoValido =>
+                        print ("Regresando al menu principal\n");
+                    MenuPrincipal registros
+                )
+            | "a" => (
+                    FuncionesGenerales.mostrar_libros_en_rango registros handle FuncionesGenerales.ValorNoValido =>
+                        print ("Regresando al menu principal\n");
+                    MenuPrincipal registros
+                )
+            | "B" => (
+                    FuncionesGenerales.mostrar_autores_5_libros registros handle ManejoArchivos.ErrorArchivo =>
+                        print ("Regresando al menu principal\n");
+                    MenuPrincipal registros
+                )
+            | "b" => (
+                    FuncionesGenerales.mostrar_autores_5_libros registros handle ManejoArchivos.ErrorArchivo =>
+                        print ("Regresando al menu principal\n");
+                    MenuPrincipal registros
+                )
+            | "C" => (
+                    menu_busqueda registros;
+                    MenuPrincipal registros
+                )
+            | "c" => (
+                    menu_busqueda registros;
+                    MenuPrincipal registros
+                )
+            | "D" => (
+                    FuncionesGenerales.mostrar_cant_libros_por_genero_especifico registros handle ManejoArchivos.ErrorArchivo =>
+                        print ("Regresando al menu principal\n");
+                    MenuPrincipal registros
+                )
+            | "d" => (
+                    FuncionesGenerales.mostrar_cant_libros_por_genero_especifico registros handle ManejoArchivos.ErrorArchivo =>
+                        print ("Regresando al menu principal\n");
+                    MenuPrincipal registros
+                )
+            | "E" => (
+                    FuncionesGenerales.mostrar_resumen_general registros handle ManejoArchivos.ErrorArchivo =>
+                        print ("Regresando al menu principal\n");
+                    MenuPrincipal registros
+                )
+            | "e" => (
+                    FuncionesGenerales.mostrar_resumen_general registros handle ManejoArchivos.ErrorArchivo =>
+                        print ("Regresando al menu principal\n");
+                    MenuPrincipal registros
+                )
+            | "S" => print ("\nSaliendo del programa...\n")
+            | "s" => print ("\nSaliendo del programa...\n")
+            | _ => (
+                    print ("\nLa opcion ingresada es invalida, intentelo nuevamente\n");
+                    MenuPrincipal registros
+                )
+        end;
+    (* Fin *)
 
-                | "B" => (FuncionesGenerales.mostrar_autores_5_libros (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal (registros))
-                | "b" => (FuncionesGenerales.mostrar_autores_5_libros (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal (registros))
-
-                | "C" => (menu_busqueda (registros); MenuPrincipal (registros))
-                | "c" => (menu_busqueda (registros); MenuPrincipal (registros))
-
-                | "D" => (FuncionesGenerales.mostrar_cant_libros_por_genero_especifico (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal (registros))
-                | "d" => (FuncionesGenerales.mostrar_cant_libros_por_genero_especifico (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal (registros))
-
-                | "E" => (FuncionesGenerales.mostrar_resumen_general (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal (registros))
-                | "e" => (FuncionesGenerales.mostrar_resumen_general (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal (registros))
-
-                | "S" => print ("\nSaliendo del programa...\n")
-                | "s" => print ("\nSaliendo del programa...\n")
-
-                | _ => (print ("\nLa opcion ingresada es invalida, intentalo nuevamente\n"); MenuPrincipal (registros))
-        end: *)
-
-fun MenuPrincipal registros = 
-    let 
-        val _ = mostrarMenu ();  
-    in
-        case FuncionesGenerales.entradaDeTeclado () of 
-            "A" => (
-                FuncionesGenerales.mostrar_libros_en_rango registros handle FuncionesGenerales.ValorNoValido =>
-                    print ("Regresando al menu principal\n");
-                MenuPrincipal registros
-            )
-          | "a" => (
-                FuncionesGenerales.mostrar_libros_en_rango registros handle FuncionesGenerales.ValorNoValido =>
-                    print ("Regresando al menu principal\n");
-                MenuPrincipal registros
-            )
-          | "B" => (
-                FuncionesGenerales.mostrar_autores_5_libros registros handle ManejoArchivos.ErrorArchivo =>
-                    print ("Regresando al menu principal\n");
-                MenuPrincipal registros
-            )
-          | "b" => (
-                FuncionesGenerales.mostrar_autores_5_libros registros handle ManejoArchivos.ErrorArchivo =>
-                    print ("Regresando al menu principal\n");
-                MenuPrincipal registros
-            )
-          | "C" => (
-                menu_busqueda registros;
-                MenuPrincipal registros
-            )
-          | "c" => (
-                menu_busqueda registros;
-                MenuPrincipal registros
-            )
-          | "D" => (
-                FuncionesGenerales.mostrar_cant_libros_por_genero_especifico registros handle ManejoArchivos.ErrorArchivo =>
-                    print ("Regresando al menu principal\n");
-                MenuPrincipal registros
-            )
-          | "d" => (
-                FuncionesGenerales.mostrar_cant_libros_por_genero_especifico registros handle ManejoArchivos.ErrorArchivo =>
-                    print ("Regresando al menu principal\n");
-                MenuPrincipal registros
-            )
-          | "E" => (
-                FuncionesGenerales.mostrar_resumen_general registros handle ManejoArchivos.ErrorArchivo =>
-                    print ("Regresando al menu principal\n");
-                MenuPrincipal registros
-            )
-          | "e" => (
-                FuncionesGenerales.mostrar_resumen_general registros handle ManejoArchivos.ErrorArchivo =>
-                    print ("Regresando al menu principal\n");
-                MenuPrincipal registros
-            )
-          | "S" => print ("\nSaliendo del programa...\n")
-          | "s" => print ("\nSaliendo del programa...\n")
-          | _ => (
-                print ("\nLa opcion ingresada es invalida, intentelo nuevamente\n");
-                MenuPrincipal registros
-            )
-    end;
-
-
-
-
+    (* Funcion para solicitar los datos del archivo al usuario, ademas se redirige a la funcion del menu principal del sistema. *)
     fun solicitarDatos () = 
         let
             val registros = (FuncionesGenerales.cargar_datos_archivo ()) handle ManejoArchivos.ErrorArchivo => (
@@ -240,40 +136,6 @@ fun MenuPrincipal registros =
         in
             MenuPrincipal (registros)
         end;
-
-
-
-
-    (* fun MenuPrincipal () = 
-        let 
-            val registros = (FuncionesGenerales.cargar_datos_archivo ()) handle ManejoArchivos.ErrorArchivo => (
-                print ("No se pudo cargar el archivo. Cerrando el programa...\n");
-                raise ManejoArchivos.ErrorArchivo); 
-
-        in
-            mostrarMenu();
-
-            case FuncionesGenerales.entradaDeTeclado () of 
-                "A" => (FuncionesGenerales.mostrar_libros_en_rango (registros) handle FuncionesGenerales.ValorNoValido => print("Regresando al menu principal\n"); MenuPrincipal ())
-                | "a" => (FuncionesGenerales.mostrar_libros_en_rango (registros) handle FuncionesGenerales.ValorNoValido => print("Regresando al menu principal\n"); MenuPrincipal ())
-
-                | "B" => (FuncionesGenerales.mostrar_autores_5_libros (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
-                | "b" => (FuncionesGenerales.mostrar_autores_5_libros (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
-
-                | "C" => (menu_busqueda (registros); MenuPrincipal ())
-                | "c" => (menu_busqueda (registros); MenuPrincipal ())
-
-                | "D" => (FuncionesGenerales.mostrar_cant_libros_por_genero_especifico (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
-                | "d" => (FuncionesGenerales.mostrar_cant_libros_por_genero_especifico (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
-
-                | "E" => (FuncionesGenerales.mostrar_resumen_general (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
-                | "e" => (FuncionesGenerales.mostrar_resumen_general (registros) handle ErrorArchivo => print("Regresando al menu principal\n"); MenuPrincipal ())
-
-                | "S" => print ("\nSaliendo del programa...\n")
-                | "s" => print ("\nSaliendo del programa...\n")
-
-                | _ => (print ("\nLa opcion ingresada es invalida, intentalo nuevamente\n"); MenuPrincipal ())
-        end; *)
-
+    (* Fin *)
 
 end;

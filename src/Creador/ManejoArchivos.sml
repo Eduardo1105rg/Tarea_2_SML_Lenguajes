@@ -33,24 +33,6 @@ struct
 
         end;
     (* Fin de la funcion para leer el contenido de un archivo. *)
-    (* 
-    fun leerLineas archivo =
-        case TextIO.inputLine archivo of
-                NONE => []  (* No hay más líneas *)
-            | SOME linea => 
-                    let
-                        val longitud = String.size linea
-                        val linea_limpia = 
-                            if longitud > 0 andalso String.substring (linea, longitud - 1, 1) = "\n" then
-                                String.substring (linea, 0, longitud - 1)  (* Eliminar el salto de línea *)
-                            else
-                                linea
-                    in
-                        linea_limpia :: leerLineas archivo
-                    end;    
-    
-     *)
-
 
     (* Funcion para la escritura de los datos en un archivo *)
     fun escribirLinea (ruta, contenido) =

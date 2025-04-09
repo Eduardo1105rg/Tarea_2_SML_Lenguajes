@@ -8,7 +8,7 @@
             use "ManejoArchivos.sml";
             use "FuncionesGenerales.sml";
             use "Menu.sml"; 
-            use "Main.sml"
+            use "Main.sml";
         Paso 4: Una vez cargados todo los archivos, ejecutar el comando >> main(); << para iniciar el programa.
 
 
@@ -20,8 +20,8 @@
         Paso 3: Ejecutar usando el siguiente comando: ./src/Analizador/compilar
 
 *)
-(* val _ = Menu.MenuPrincipal (); *)
 
+(* Funcion principal encargada de ejecutar le programa. *)
 fun main() =
     Menu.solicitarDatos ();
 
