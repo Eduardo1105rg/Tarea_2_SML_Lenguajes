@@ -427,8 +427,183 @@ struct
     (* Fin *)
 
     (* funcion *)
-    fun mostrar_resumen_general (datos) = ()
+    fun mostrar_cant_libros_por_categoria  (categorias, cantLibros) =
+        (* Verificar si hay datos *)
+        if List.length categorias = 0 then
+            print ("No hay generos registrados en la biblioteca.\n")
+        else (
+            print ("\n===== Cantidad de libros por genero =====\n");
+            (* Iterar sobre categorías y conteos para mostrar la información *)
+            List.app (fn (categoria, cantidad) =>
+                print ("Genero: " ^ categoria ^ ", Cantidad de libros: " ^ Int.toString cantidad ^ "\n")
+            ) (ListPair.zip (categorias, cantLibros))
+        );
     (* Fin *)
 
+    (* funcion *)
+    fun libro_con_mas_copias (datos) =
+        let
+            (* Ordenar los libros en orden descendente por número de copias *)
+            val librosOrdenados = ordenamientoQS datos (fn libroA => fn libroB =>
+                let
+                    val copiasA = Int.fromString (List.nth (libroA, 4))
+                    val copiasB = Int.fromString (List.nth (libroB, 4))
+                in
+                    case (copiasA, copiasB) of
+                        (SOME a, SOME b) => a < b  
+                    | _ => false
+                end
+            )
+        in
+            if List.length librosOrdenados = 0 then
+                []  
+            else
+                List.nth (librosOrdenados, 0)  
+        end;
+
+    (* Fin *)
+
+    (* funcion *)
+    fun libro_con_menos_copias (datos) =
+        let
+       
+            val librosOrdenados = ordenamientoQS datos (fn libroA => fn libroB =>
+                let
+                    val copiasA = Int.fromString (List.nth (libroA, 4))
+                    val copiasB = Int.fromString (List.nth (libroB, 4))
+                in
+                    case (copiasA, copiasB) of
+                        (SOME a, SOME b) => a > b  
+                    | _ => false
+                end
+            )
+        in
+            if List.length librosOrdenados = 0 then
+                []  
+            else
+                List.nth (librosOrdenados, 0)  
+        end;
+
+    (* Fin *)
+
+    (* funcion *)
+    fun mostrar_libro (libroData, titulo) =
+        if libroData = [] then
+            print ("No hay libros registrados.\n")
+        else  
+            let
+                val codigo = List.nth (libroData, 0)
+                val fecha = List.nth (libroData, 1)
+                val autor = List.nth (libroData, 2)
+                val genero = List.nth (libroData, 3)
+                val copias = List.nth (libroData, 4)
+            in
+                print ("===== " ^ titulo ^ " =====\n");
+                print ("Codigo: " ^ codigo ^ "\n");
+                print ("Fecha: " ^ fecha ^ "\n");
+                print ("Autor: " ^ autor ^ "\n");
+                print ("Genero: " ^ genero ^ "\n");
+                print ("Copias: " ^ copias ^ "\n")
+            end;
+
+    (* Fin *)
+
+    (* funcion *)
+    exception FallorEnListas;
+    fun encontrar_maximos_en_lista ([], [], datoMayor, cantMayor) = (datoMayor, cantMayor)
+    | encontrar_maximos_en_lista ([], _::_, _, _) = raise FallorEnListas   
+    | encontrar_maximos_en_lista (_::_, [], _, _) = raise FallorEnListas   
+    | encontrar_maximos_en_lista (actualData::listaTotalData, actualCant::cantLibros, datoMayor, cantMayor) =
+        if actualCant > cantMayor then
+            encontrar_maximos_en_lista (listaTotalData, cantLibros, actualData, actualCant)
+        else 
+            encontrar_maximos_en_lista (listaTotalData, cantLibros, datoMayor, cantMayor);
+
+    (* Fin *)
+
+    (* funcion *)
+    (* fun buscar_autor_con_mas_libros (autores, cantLibros) = 
+        if List.length autores = 0 then
+            NONE
+        else 
+            SOME (encontrar_maximos_en_lista (autores, cantLibros, "", 0)); *)
+    (* Fin *)
+
+    (* funcion *)
+    fun mostrar_autor_con_mas_libros (resultado) =
+        case resultado of
+            NONE => print ("No hay autores registrados.\n")
+        | SOME (autor, cantidad) =>(
+                print ("===== Autor con mas libros registrados =====\n");
+                print ("Autor: " ^ autor ^ "\n");
+                print ("Cantidad de libros: " ^ Int.toString cantidad ^ "\n"));
+
+    (* Fin *)
+
+    (* funcion *)
+    fun encontar_maximos (autores, cantLibros) = 
+        if List.length autores = 0 then
+            NONE
+        else 
+            SOME (encontrar_maximos_en_lista (autores, cantLibros, "", 0));
+    (* Fin *)
+
+    (* funcion *)
+    fun mostrar_genero_con_mas_libros (resultado) =
+        case resultado of
+            NONE => print ("No hay generos registrados.\n")
+        | SOME (autor, cantidad) =>(
+                print ("===== Genero con mas libros registrados =====\n");
+                print ("Genro: " ^ autor ^ "\n");
+                print ("Cantidad de libros: " ^ Int.toString cantidad ^ "\n"));
+    (* Fin *)
+
+    (* funcion *)
+    fun mostrar_resumen_general (datos) =
+        let
+
+            val () = print ("\n");
+            val () = print ("=== Inicio del informe de la biblioteca...\n");
+            val () = print ("\n");
+
+            val (generos, cantLibrosG) = contar_libros_por_categoria (datos);
+
+            val _ = mostrar_cant_libros_por_categoria (generos, cantLibrosG);
+
+            val () = print ("\n")
+
+            val mayorCopias = libro_con_mas_copias (datos);
+            val _ = mostrar_libro (mayorCopias, "Libro con mas copias disponibles");
+
+            val () = print ("\n")
+
+            val menorCopias = libro_con_menos_copias (datos);
+            val _ = mostrar_libro (menorCopias, "Libro con menos copias disponibles");
+
+            val () = print ("\n");
+
+            val (autores, cantLibrosA) = contar_libros_por_autor_sistema (datos);
+
+            val autor_mayor = encontar_maximos (autores, cantLibrosA);
+            val _ = mostrar_autor_con_mas_libros (autor_mayor);
+
+            val () = print ("\n");
+
+            val genero_mayor = encontar_maximos (generos, cantLibrosG);
+            val _ = mostrar_genero_con_mas_libros (genero_mayor);
+            
+            val () = print ("\n");
+            val () = print ("=== Fin del informe de la biblioteca...\n");
+
+        in
+          ()
+        end;
+
+    (* Fin *)
+
+
+    (* funcion *)
+
+    (* Fin *)
 
 end;
