@@ -21,12 +21,18 @@ struct
                 (* Hay que eliminar ese \n que se pone al final de las lineas. *)
                 let
                     val longitud = size datos
+                    (* Verificar si el ultimo caracter es un salto de linea*)
+                    val entradaSinSalto = if longitud > 0 andalso String.substring(datos, longitud - 1, 1) = "\n" then
+                            String.substring(datos, 0, longitud - 1)  
+                        else
+                            datos
+
                 in
-                    (* Verifica si en el elemento final se encuntra ese salto de linea. *)
-                    if longitud > 0 andalso String.substring(datos, longitud - 1, 1) = "\n" then
-                        String.substring(datos, 0, longitud - 1)  
+                    (* Validar si la cadena ingresada no es vacia. *)
+                    if String.size entradaSinSalto = 0 then
+                        (print ("La entrada no puede estar vacia, intentelo nuevamente\n"); entradaDeTeclado ())
                     else
-                        datos  
+                        entradaSinSalto  
                 end;
     (* Fin de la funcion para permitir el ingreso de texto, mediante el teclado. *)
 
@@ -92,7 +98,7 @@ struct
     (* Fin de la funcion para cargar los datos  *)
 
 
-    (* funcion *)
+    (* funcion de ordenamiento Quick sort, esta funcion separa las listas en dos sublistas las cuales van acomodandose de mayor a menor.*)
     fun ordenamientoQS [] _ = []
         | ordenamientoQS (pivote::lista) cmp =
             let
@@ -178,7 +184,7 @@ struct
 
 
     exception Fallo;
-    (* Funcion *)
+    (* Funcion pa la modificacion de un elementos especifico de una lista, la funcion recorre los indices hasta encontrar el indice destino.*)
     fun actualizar_lista [] _ _ = raise Fallo 
     | actualizar_lista (elemento::lista) indice nuevo =
             if indice = 0 then
@@ -187,7 +193,7 @@ struct
                 elemento::actualizar_lista lista (indice - 1) nuevo;
     (* FIN *)
 
-    (* Funcion *)
+    (* Funcion  que optiene el indice de un elemento especifico de una lista.*)
     fun optener_indice (anterior, [], indice) = NONE
         | optener_indice (anterior, elemento::lista, indice) =
             if anterior = elemento then
@@ -197,13 +203,13 @@ struct
     (* FIN *)
 
 
-    (* Funcion *)
+    (* Funcion que realiza una llamada a optener_indice, y le pasa los datos que esta funcion requiere para funcionar.*)
     fun buscar_indice elemento lista =
         optener_indice (elemento, lista, 0);
 
     (* FIN *)
 
-    (* Funcion *)
+    (* Funcion para contar la cantidad de libros que tiene registradas cada autor del sistema, la funcion devuelve dos listas, una con los autores y otra con la cantidad de libros de cada uno. *)
     fun contar_libros_por_autor_sistema datos = 
         let
             fun contar_libros_autor ([], []) [] = ([], [])
@@ -211,21 +217,21 @@ struct
             | contar_libros_autor ([], cantLibros) [] = ([], cantLibros)
             | contar_libros_autor (autores, cantLibros) [] = (autores, cantLibros)  (* Caso faltante *)
             | contar_libros_autor (autores, cantLibros) (libro::libros) = 
-                    let
-                        val autor = List.nth (libro, 2)  (* Columna del autor *)
-                        val validarExistencia = List.find (fn autorActual => autorActual = autor) autores
-                    in
-                        case validarExistencia of 
-                            NONE => 
-                                contar_libros_autor (autor::autores, 1::cantLibros) libros
-                        | SOME _ => 
-                                let
-                                    val indice = Option.valOf (buscar_indice autor autores)
-                                    val nuevo_elemento = actualizar_lista cantLibros indice (List.nth (cantLibros, indice) + 1)
-                                in
-                                    contar_libros_autor (autores, nuevo_elemento) libros
-                                end
-                    end
+                let
+                    val autor = List.nth (libro, 2)  (* Columna del autor *)
+                    val validarExistencia = List.find (fn autorActual => autorActual = autor) autores
+                in
+                    case validarExistencia of 
+                        NONE => 
+                            contar_libros_autor (autor::autores, 1::cantLibros) libros
+                    | SOME _ => 
+                            let
+                                val indice = Option.valOf (buscar_indice autor autores)
+                                val nuevo_elemento = actualizar_lista cantLibros indice (List.nth (cantLibros, indice) + 1)
+                            in
+                                contar_libros_autor (autores, nuevo_elemento) libros
+                            end
+                end
         in
             contar_libros_autor ([], []) datos
         end;
@@ -245,7 +251,7 @@ struct
 
     (* Fin *)
 
-    (* Funcion *)
+    (* Funcion para filtrar en una lista a los autores que tengan mas de 5 libros registrados.*)
     fun filtrar_autores_con_5_libros (autores, cantLibros) =
         let
             fun filtrado ([],[]) resultado = resultado
@@ -262,7 +268,7 @@ struct
     (* Fin *)
 
 
-    (* funcion *)
+    (* funcion para mostrar los datos de una lista en que estaran los nombre de los autores que tengan mas de 5 libros registrados.*)
     fun mostrar_autores_5_libros (datos) = 
         let
           val (autores, cantLibros) = contar_libros_por_autor_sistema (datos);
@@ -277,7 +283,7 @@ struct
         end;
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para la busqueda en los registros de un libro especifico mediante el codigo.*)
     fun buscar_libros_por_codigo (datos) =
         let
             val () = print ("\nIngrese el codigo del libro. (E.j: LIB9999): ")
@@ -318,7 +324,7 @@ struct
         end;
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para la busqueda de los libros mediante su autor, devuelve todo los libros que tenga ese autor. *)
     fun buscar_libros_por_autor (datos) = 
         let
             (* Se solicita  el nombre del autor*)
@@ -362,7 +368,7 @@ struct
     (* Fin *)
 
 
-    (* funcion *)
+    (* funcion para contar la cantidad de libros que tenga cada categoria de los registros.*)
     fun contar_libros_por_categoria (datos) = 
         let
             fun contar_libros_categoria ([], []) [] = ([], [])
@@ -370,44 +376,44 @@ struct
             | contar_libros_categoria ([], cantLibros) [] = ([], cantLibros)
             | contar_libros_categoria (categorias, cantLibros) [] = (categorias, cantLibros)  (* Caso faltante *)
             | contar_libros_categoria (categorias, cantLibros) (libro::libros) = 
-                    let
-                        val autor = List.nth (libro, 3)  (* Columna del autor *)
-                        val validarExistencia = List.find (fn autorActual => autorActual = autor) categorias
-                    in
-                        case validarExistencia of 
-                            NONE => 
-                                contar_libros_categoria (autor::categorias, 1::cantLibros) libros
-                        | SOME _ => 
-                                let
-                                    val indice = Option.valOf (buscar_indice autor categorias)
-                                    val nuevo_elemento = actualizar_lista cantLibros indice (List.nth (cantLibros, indice) + 1)
-                                in
-                                    contar_libros_categoria (categorias, nuevo_elemento) libros
-                                end
-                    end
+                let
+                    val autor = List.nth (libro, 3)  (* Columna del autor *)
+                    val validarExistencia = List.find (fn autorActual => autorActual = autor) categorias
+                in
+                    case validarExistencia of 
+                        NONE => 
+                            contar_libros_categoria (autor::categorias, 1::cantLibros) libros
+                    | SOME _ => 
+                            let
+                                val indice = Option.valOf (buscar_indice autor categorias)
+                                val nuevo_elemento = actualizar_lista cantLibros indice (List.nth (cantLibros, indice) + 1)
+                            in
+                                contar_libros_categoria (categorias, nuevo_elemento) libros
+                            end
+                end
         in
             contar_libros_categoria ([], []) datos
         end;
     (* Fin *)
 
-    (* Funcion *)
+    (* Funcion funcion para filtrar los libros de una catgoria especifica.*)
     fun filtrar_libros_por_genero (generos, cantLibros, generoBuscado) =
         let
             fun filtrado ([], []) contador = contador
             | filtrado ([], cantLibros) contador = contador
             | filtrado (generos, []) contador = contador
             | filtrado (genero::generos2, cantidad::cantidades) contador =
-                    if genero = generoBuscado then
-                        filtrado (generos2, cantidades) (contador + cantidad)
-                    else
-                        filtrado (generos2, cantidades) contador
+                if genero = generoBuscado then
+                    filtrado (generos2, cantidades) (contador + cantidad)
+                else
+                    filtrado (generos2, cantidades) contador
         in
             filtrado (generos, cantLibros) 0
         end;
 
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para mostrar la cantidad de libros que tiene una categoria especifica seleccionada por el usuario.*)
     fun mostrar_cant_libros_por_genero_especifico (datos) = 
         let
             (* Se solicita el genero del libro *)
@@ -426,21 +432,22 @@ struct
         end;
     (* Fin *)
 
-    (* funcion *)
+    (* funcion Funcion para mostrar la cantidad de libros de cada categoria de los registros.*)
     fun mostrar_cant_libros_por_categoria  (categorias, cantLibros) =
         (* Verificar si hay datos *)
         if List.length categorias = 0 then
             print ("No hay generos registrados en la biblioteca.\n")
         else (
             print ("\n===== Cantidad de libros por genero =====\n");
-            (* Iterar sobre categorías y conteos para mostrar la información *)
+            
             List.app (fn (categoria, cantidad) =>
                 print ("Genero: " ^ categoria ^ ", Cantidad de libros: " ^ Int.toString cantidad ^ "\n")
             ) (ListPair.zip (categorias, cantLibros))
+            (* ListPair.zip, lo que hace es conbinar las dos listas, o bueno, basicamente permite que las dos listas se puedan recorrer al mismo tiempo. *)
         );
     (* Fin *)
 
-    (* funcion *)
+    (* funcion Funcion para determinar que libros registrado en el sistema tiene mas copias.*)
     fun libro_con_mas_copias (datos) =
         let
             (* Ordenar los libros en orden descendente por número de copias *)
@@ -463,7 +470,7 @@ struct
 
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para determinar que libro del sistema tiene menos copias.*)
     fun libro_con_menos_copias (datos) =
         let
        
@@ -486,7 +493,7 @@ struct
 
     (* Fin *)
 
-    (* funcion *)
+    (* funcion Funcion para mostrar los datos de un libro.*)
     fun mostrar_libro (libroData, titulo) =
         if libroData = [] then
             print ("No hay libros registrados.\n")
@@ -508,7 +515,9 @@ struct
 
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para encontrar los elementos en una lista que tengan un mayor numero de libros, ya sea por autor o por categoria, recibe dos listas, la primera con nombre y la segunda con
+    numeros que represnetan cantidades.
+    *)
     exception FallorEnListas;
     fun encontrar_maximos_en_lista ([], [], datoMayor, cantMayor) = (datoMayor, cantMayor)
     | encontrar_maximos_en_lista ([], _::_, _, _) = raise FallorEnListas   
@@ -521,7 +530,7 @@ struct
 
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para mostrar el autor que tenga mas libros registrado en el sistema.*)
     fun mostrar_autor_con_mas_libros (resultado) =
         case resultado of
             NONE => print ("No hay autores registrados.\n")
@@ -532,7 +541,7 @@ struct
 
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para inciar el encuntro de valores mas altos en los datos de dos listas.*)
     fun encontar_maximos (autores, cantLibros) = 
         if List.length autores = 0 then
             NONE
@@ -540,7 +549,7 @@ struct
             SOME (encontrar_maximos_en_lista (autores, cantLibros, "", 0));
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para mostrar el genero literario que tenga mas libros registrado en el sistema.*)
     fun mostrar_genero_con_mas_libros (resultado) =
         case resultado of
             NONE => print ("No hay generos registrados.\n")
@@ -550,7 +559,7 @@ struct
                 print ("Cantidad de libros: " ^ Int.toString cantidad ^ "\n"));
     (* Fin *)
 
-    (* funcion *)
+    (* funcion para mostrar los datos del resumen general del programa.*)
     fun mostrar_resumen_general (datos) =
         let
 
