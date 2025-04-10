@@ -25,4 +25,4 @@
 fun main() =
     Menu.solicitarDatos ();
 
-val _ = main ();
+(* val _ = main (); *)
